@@ -7,152 +7,44 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --navy: #0e1a2e;
-    --navy-mid: #152033;
-    --navy-light: #1c2d42;
-    --orange: #C9A84C;
-    --orange-dim: rgba(201,168,76,0.12);
-    --orange-glow: rgba(201,168,76,0.35);
-    --white: #f0ece4;
-    --muted: #6b7e93;
-    --border: rgba(240,236,228,0.08);
-    --green: #4ade80;
-    --red: #f87171;
-    --yellow: #fbbf24;
+    --navy: #0e1a2e; --navy-mid: #152033; --navy-light: #1c2d42;
+    --orange: #C9A84C; --orange-dim: rgba(201,168,76,0.12); --orange-glow: rgba(201,168,76,0.35);
+    --white: #f0ece4; --muted: #6b7e93; --border: rgba(240,236,228,0.08);
+    --green: #4ade80; --red: #f87171;
   }
-
-  body {
-    background: var(--navy);
-    color: var(--white);
-    font-family: 'DM Mono', monospace;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 20px 80px;
-    position: relative;
-    overflow-x: hidden;
-  }
-
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image:
-      linear-gradient(rgba(244,124,43,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(244,124,43,0.03) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none; z-index: 0;
-  }
-
-  .wrap {
-    position: relative; z-index: 1;
-    width: 100%; max-width: 700px;
-    display: flex; flex-direction: column; gap: 24px;
-  }
-
-  header {
-    display: flex; align-items: center; gap: 14px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .logo-img {
-    height: 48px; flex-shrink: 0;
-    display: flex; align-items: center;
-  }
-  .logo-img img {
-    height: 48px; width: auto;
-    border-radius: 6px;
-  }
-
-  header h1 { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 19px; }
-  header p  { font-size: 11px; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
-
-  .card {
-    background: var(--navy-mid);
-    border: 1px solid var(--border);
-    border-radius: 16px; padding: 24px;
-  }
-
-  .label {
-    font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--orange);
-    display: flex; align-items: center; gap: 8px; margin-bottom: 16px;
-  }
-  .label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-  /* Keys */
-  .key-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
-  .key-row:last-of-type { margin-bottom: 0; }
-  .key-row label { font-size: 11px; color: var(--muted); }
-
-  .key-input {
-    background: var(--navy); border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 14px; font-family: 'DM Mono', monospace; font-size: 13px; color: var(--white);
-    width: 100%; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .key-input::placeholder { color: var(--muted); }
-  .key-input:focus { border-color: var(--orange); box-shadow: 0 0 0 3px var(--orange-dim); }
-
-  /* Recorder */
-  .recorder { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-
-  .viz-wrap {
-    width: 100%; height: 68px; background: var(--navy);
-    border: 1px solid var(--border); border-radius: 12px; overflow: hidden; position: relative;
-  }
-
-  #waveCanvas { width: 100%; height: 100%; display: block; }
-
-  .viz-idle {
-    position: absolute; inset: 0;
-    display: flex; align-items: center; justify-content: center; gap: 3px;
-    pointer-events: none;
-  }
-  .viz-idle span {
-    display: block; width: 3px; background: var(--border); border-radius: 2px; height: 20px;
-    animation: idle-bar 1.4s ease-in-out infinite;
-  }
-  .viz-idle span:nth-child(1)  { animation-delay:0s }
-  .viz-idle span:nth-child(2)  { animation-delay:.1s; height:32px }
-  .viz-idle span:nth-child(3)  { animation-delay:.2s; height:14px }
-  .viz-idle span:nth-child(4)  { animation-delay:.3s; height:28px }
-  .viz-idle span:nth-child(5)  { animation-delay:.4s; height:18px }
-  .viz-idle span:nth-child(6)  { animation-delay:.5s; height:36px }
-  .viz-idle span:nth-child(7)  { animation-delay:.6s; height:22px }
-  .viz-idle span:nth-child(8)  { animation-delay:.7s; height:12px }
-  .viz-idle span:nth-child(9)  { animation-delay:.8s; height:30px }
-  .viz-idle span:nth-child(10) { animation-delay:.9s; height:18px }
-
-  @keyframes idle-bar {
-    0%,100% { opacity:.2; transform:scaleY(1) }
-    50% { opacity:.5; transform:scaleY(1.3) }
-  }
-
-  .timer {
-    font-family: 'Syne', sans-serif; font-size: 38px; font-weight: 800;
-    color: var(--white); letter-spacing: -1px; font-variant-numeric: tabular-nums; transition: color 0.3s;
-  }
-  .timer.recording { color: var(--orange); }
-
-  .rec-status {
-    font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted);
-    display: flex; align-items: center; gap: 8px; margin-top: -12px;
-  }
+  body { background:var(--navy); color:var(--white); font-family:'DM Mono',monospace; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:40px 20px 80px; position:relative; overflow-x:hidden; }
+  body::before { content:''; position:fixed; inset:0; background-image:linear-gradient(rgba(201,168,76,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,0.03) 1px,transparent 1px); background-size:48px 48px; pointer-events:none; z-index:0; }
+  .wrap { position:relative; z-index:1; width:100%; max-width:700px; display:flex; flex-direction:column; gap:24px; }
+  header { display:flex; align-items:center; gap:14px; padding-bottom:20px; border-bottom:1px solid var(--border); }
+  .logo-img { height:48px; flex-shrink:0; display:flex; align-items:center; }
+  .logo-img img { height:48px; width:auto; border-radius:6px; }
+  header h1 { font-family:'Syne',sans-serif; font-weight:700; font-size:19px; }
+  header p { font-size:11px; color:var(--muted); letter-spacing:0.5px; text-transform:uppercase; margin-top:2px; }
+  .card { background:var(--navy-mid); border:1px solid var(--border); border-radius:16px; padding:24px; }
+  .label { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--orange); display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+  .label::after { content:''; flex:1; height:1px; background:var(--border); }
+  .key-row { display:flex; flex-direction:column; gap:6px; margin-bottom:12px; }
+  .key-row:last-of-type { margin-bottom:0; }
+  .key-row label { font-size:11px; color:var(--muted); }
+  .key-input { background:var(--navy); border:1px solid var(--border); border-radius:10px; padding:10px 14px; font-family:'DM Mono',monospace; font-size:13px; color:var(--white); width:100%; outline:none; transition:border-color .2s,box-shadow .2s; }
+  .key-input::placeholder { color:var(--muted); }
+  .key-input:focus { border-color:var(--orange); box-shadow:0 0 0 3px var(--orange-dim); }
+  .recorder { display:flex; flex-direction:column; align-items:center; gap:20px; }
+  .viz-wrap { width:100%; height:68px; background:var(--navy); border:1px solid var(--border); border-radius:12px; overflow:hidden; position:relative; }
+  #waveCanvas { width:100%; height:100%; display:block; }
+  .viz-idle { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:3px; pointer-events:none; }
+  .viz-idle span { display:block; width:3px; background:var(--border); border-radius:2px; height:20px; animation:idle-bar 1.4s ease-in-out infinite; }
+  .viz-idle span:nth-child(1){animation-delay:0s} .viz-idle span:nth-child(2){animation-delay:.1s;height:32px} .viz-idle span:nth-child(3){animation-delay:.2s;height:14px} .viz-idle span:nth-child(4){animation-delay:.3s;height:28px} .viz-idle span:nth-child(5){animation-delay:.4s;height:18px} .viz-idle span:nth-child(6){animation-delay:.5s;height:36px} .viz-idle span:nth-child(7){animation-delay:.6s;height:22px} .viz-idle span:nth-child(8){animation-delay:.7s;height:12px} .viz-idle span:nth-child(9){animation-delay:.8s;height:30px} .viz-idle span:nth-child(10){animation-delay:.9s;height:18px}
+  @keyframes idle-bar { 0%,100%{opacity:.2;transform:scaleY(1)} 50%{opacity:.5;transform:scaleY(1.3)} }
+  .timer { font-family:'Syne',sans-serif; font-size:38px; font-weight:800; color:var(--white); letter-spacing:-1px; font-variant-numeric:tabular-nums; transition:color .3s; }
+  .timer.recording { color:var(--orange); }
+  .rec-status { font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:8px; margin-top:-12px; }
   .rec-dot { width:7px; height:7px; border-radius:50%; background:var(--muted); transition:background .3s; }
   .rec-dot.active { background:var(--red); animation:blink 1s ease-in-out infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
-
   .controls { display:flex; gap:12px; width:100%; }
-
-  .btn-rec {
-    flex:1; padding:14px; border-radius:12px; border:none;
-    font-family:'Syne',sans-serif; font-weight:700; font-size:14px;
-    cursor:pointer; transition:all .2s;
-    display:flex; align-items:center; justify-content:center; gap:8px;
-    position:relative; overflow:hidden;
-  }
+  .btn-rec { flex:1; padding:14px; border-radius:12px; border:none; font-family:'Syne',sans-serif; font-weight:700; font-size:14px; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; gap:8px; position:relative; overflow:hidden; }
   .btn-rec::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.12),transparent); }
   .btn-start { background:var(--orange); color:var(--navy); }
   .btn-start:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 8px 24px var(--orange-glow); }
@@ -160,154 +52,74 @@
   .btn-stop:hover:not(:disabled) { background:rgba(248,113,113,.22); }
   .btn-rec:disabled { opacity:.35; cursor:not-allowed; transform:none!important; box-shadow:none!important; }
   .btn-rec svg { width:16px; height:16px; fill:currentColor; }
-
   .playback { display:none; flex-direction:column; gap:10px; width:100%; }
   .playback.visible { display:flex; }
   .playback-meta { display:flex; align-items:center; justify-content:space-between; font-size:12px; }
   .ready { color:var(--green); }
-
-  .btn-discard {
-    background:none; border:1px solid var(--border); border-radius:8px; color:var(--muted);
-    font-family:'DM Mono',monospace; font-size:11px; padding:5px 12px; cursor:pointer; transition:all .2s;
-  }
+  .btn-discard { background:none; border:1px solid var(--border); border-radius:8px; color:var(--muted); font-family:'DM Mono',monospace; font-size:11px; padding:5px 12px; cursor:pointer; transition:all .2s; }
   .btn-discard:hover { border-color:var(--red); color:var(--red); }
   audio { width:100%; display:block; accent-color:var(--orange); }
-
-  /* Main CTA */
-  .btn-main {
-    width:100%; background:var(--orange); color:var(--navy); border:none;
-    border-radius:12px; padding:15px 28px;
-    font-family:'Syne',sans-serif; font-weight:700; font-size:15px; cursor:pointer;
-    transition:all .2s; position:relative; overflow:hidden; margin-top:20px;
-  }
+  .btn-main { width:100%; background:var(--orange); color:var(--navy); border:none; border-radius:12px; padding:15px 28px; font-family:'Syne',sans-serif; font-weight:700; font-size:15px; cursor:pointer; transition:all .2s; position:relative; overflow:hidden; margin-top:20px; }
   .btn-main::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.15),transparent); }
   .btn-main:hover:not(:disabled) { transform:translateY(-1px); box-shadow:0 8px 24px var(--orange-glow); }
   .btn-main:disabled { opacity:.35; cursor:not-allowed; transform:none; box-shadow:none; }
-
-  /* Progress */
   .progress-steps { display:flex; flex-direction:column; gap:14px; }
   .step { display:flex; align-items:center; gap:12px; font-size:13px; color:var(--muted); transition:color .3s; }
-  .step.active { color:var(--white); }
-  .step.done { color:var(--green); }
-  .step.err { color:var(--red); }
-  .step-dot {
-    width:22px; height:22px; border-radius:50%; border:2px solid currentColor;
-    display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; font-size:10px; transition:all .3s;
-  }
+  .step.active { color:var(--white); } .step.done { color:var(--green); } .step.err { color:var(--red); }
+  .step-dot { width:22px; height:22px; border-radius:50%; border:2px solid currentColor; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:10px; transition:all .3s; }
   .step.active .step-dot { border-color:var(--orange); background:var(--orange-dim); animation:pdot 1.2s ease-in-out infinite; }
   .step.done .step-dot { background:var(--green); border-color:var(--green); color:var(--navy); }
-  .step.err .step-dot  { background:var(--red);   border-color:var(--red);   color:var(--navy); }
+  .step.err .step-dot { background:var(--red); border-color:var(--red); color:var(--navy); }
   @keyframes pdot { 0%,100%{box-shadow:0 0 0 0 var(--orange-glow)} 50%{box-shadow:0 0 0 7px transparent} }
-
-  /* Results */
-  .results-tabs {
-    display:flex; gap:4px; background:var(--navy); border-radius:10px; padding:4px; margin-bottom:20px;
-  }
-  .tab {
-    flex:1; padding:9px; background:none; border:none; color:var(--muted);
-    font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; border-radius:7px; transition:all .2s;
-  }
+  .results-tabs { display:flex; gap:4px; background:var(--navy); border-radius:10px; padding:4px; margin-bottom:20px; }
+  .tab { flex:1; padding:9px; background:none; border:none; color:var(--muted); font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; border-radius:7px; transition:all .2s; }
   .tab.active { background:var(--navy-mid); color:var(--white); border:1px solid var(--border); }
-  .tab-panel { display:none; }
-  .tab-panel.active { display:block; }
-
-  /* Transcript output */
-  .text-output {
-    background:var(--navy); border:1px solid var(--border); border-radius:12px;
-    padding:18px; font-size:13px; line-height:1.8; color:var(--white);
-    white-space:pre-wrap; max-height:320px; overflow-y:auto;
-    scrollbar-width:thin; scrollbar-color:var(--border) transparent;
-  }
-
-  /* Form preview */
+  .tab-panel { display:none; } .tab-panel.active { display:block; }
+  .text-output { background:var(--navy); border:1px solid var(--border); border-radius:12px; padding:18px; font-size:13px; line-height:1.8; color:var(--white); white-space:pre-wrap; max-height:320px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
   .form-preview { display:flex; flex-direction:column; gap:14px; }
-
-  .form-section {
-    background:var(--navy); border:1px solid var(--border); border-radius:12px; overflow:hidden;
-  }
-
-  .form-section-title {
-    font-family:'Syne',sans-serif; font-size:12px; font-weight:600;
-    color:var(--orange); padding:12px 16px;
-    border-bottom:1px solid var(--border);
-    background:rgba(244,124,43,0.05);
-  }
-
+  .form-section { background:var(--navy); border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+  .form-section-title { font-family:'Syne',sans-serif; font-size:12px; font-weight:600; color:var(--orange); padding:12px 16px; border-bottom:1px solid var(--border); background:rgba(201,168,76,0.05); }
   .form-rows { padding:4px 0; }
-
-  .form-row {
-    display:grid; grid-template-columns:160px 1fr;
-    border-bottom:1px solid var(--border); min-height:36px;
-  }
+  .form-row { display:grid; grid-template-columns:160px 1fr; border-bottom:1px solid var(--border); min-height:36px; }
   .form-row:last-child { border-bottom:none; }
-
-  .form-key {
-    font-size:11px; color:var(--muted); padding:10px 16px;
-    border-right:1px solid var(--border);
-    display:flex; align-items:center;
-  }
-
-  .form-val {
-    font-size:12px; color:var(--white); padding:10px 14px;
-    line-height:1.5;
-  }
-
-  .form-val.empty { color:rgba(107,126,147,0.5); font-style:italic; }
-  .form-val.filled { color:var(--white); }
-
-  /* Tag chips */
-  .tag {
-    display:inline-block;
-    background:var(--orange-dim); border:1px solid var(--orange-glow);
-    border-radius:5px; padding:2px 8px; font-size:11px; color:var(--orange);
-    margin:2px;
-  }
-
-  /* Actions */
+  .form-key { font-size:11px; color:var(--muted); padding:10px 16px; border-right:1px solid var(--border); display:flex; align-items:center; }
+  .form-val { font-size:12px; padding:10px 14px; line-height:1.5; }
+  .form-val.empty { color:rgba(107,126,147,0.5); font-style:italic; } .form-val.filled { color:var(--white); }
   .actions-row { display:flex; gap:10px; margin-top:16px; flex-wrap:wrap; }
-  .btn-sec {
-    flex:1; min-width:140px;
-    background:var(--navy); border:1px solid var(--border); color:var(--white); border-radius:10px;
-    padding:11px 14px; font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; transition:all .2s;
-  }
+  .btn-sec { flex:1; min-width:140px; background:var(--navy); border:1px solid var(--border); color:var(--white); border-radius:10px; padding:11px 14px; font-family:'DM Mono',monospace; font-size:12px; cursor:pointer; transition:all .2s; }
   .btn-sec:hover { border-color:var(--orange); color:var(--orange); }
-  .btn-download {
-    flex:1; min-width:140px;
-    background:var(--orange); color:var(--navy); border:none; border-radius:10px;
-    padding:11px 14px; font-family:'Syne',sans-serif; font-weight:700; font-size:13px;
-    cursor:pointer; transition:all .2s; position:relative; overflow:hidden;
-  }
+  .btn-download { flex:1; min-width:140px; background:var(--orange); color:var(--navy); border:none; border-radius:10px; padding:11px 14px; font-family:'Syne',sans-serif; font-weight:700; font-size:13px; cursor:pointer; transition:all .2s; position:relative; overflow:hidden; }
   .btn-download::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.15),transparent); }
   .btn-download:hover { transform:translateY(-1px); box-shadow:0 6px 20px var(--orange-glow); }
   .btn-download:disabled { opacity:.4; cursor:not-allowed; transform:none; box-shadow:none; }
-
-  /* Error */
-  .err-msg {
-    background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3);
-    border-radius:10px; padding:12px 16px; font-size:12px; color:var(--red);
-    display:none; margin-top:12px;
-  }
+  .err-msg { background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.3); border-radius:10px; padding:12px 16px; font-size:12px; color:var(--red); display:none; margin-top:12px; }
   .err-msg.visible { display:block; }
   .hidden { display:none!important; }
-
   footer { text-align:center; font-size:11px; color:var(--muted); margin-top:8px; letter-spacing:.4px; line-height:1.6; }
 </style>
 </head>
 <body>
 <div class="wrap">
-
   <header>
-    <div class="logo">A</div>
+    <div class="logo-img"><img src="data:image/png;base64,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" alt="Itera Patrimoine"></div>
     <div>
       <h1>Formulaire Découverte Client</h1>
       <p>Itera Patrimoine · Remplissage automatique par IA</p>
     </div>
   </header>
 
-
-  <input type="hidden" id="groq-key" value="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">
-  <input type="hidden" id="anthropic-key" value="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">
+  <!-- Keys -->
+  <div class="card">
+    <div class="label">Clés API <span style="font-size:9px;color:var(--muted);text-transform:none;letter-spacing:0">(sauvegardées automatiquement)</span></div>
+    <div class="key-row">
+      <label>Clé OpenAI (Whisper — transcription)</label>
+      <input class="key-input" type="password" id="openai-key" placeholder="sk-proj-..." autocomplete="off">
+    </div>
+    <div class="key-row">
+      <label>Clé Anthropic (Claude — analyse)</label>
+      <input class="key-input" type="password" id="anthropic-key" placeholder="sk-ant-..." autocomplete="off">
+    </div>
+  </div>
 
   <!-- Recorder -->
   <div class="card">
@@ -320,38 +132,19 @@
           <span></span><span></span><span></span><span></span><span></span>
         </div>
       </div>
-
       <div class="timer" id="timer">00:00</div>
-      <div class="rec-status">
-        <div class="rec-dot" id="rec-dot"></div>
-        <span id="rec-label">Prêt à enregistrer</span>
-      </div>
-
+      <div class="rec-status"><div class="rec-dot" id="rec-dot"></div><span id="rec-label">Prêt à enregistrer</span></div>
       <div class="controls">
-        <button class="btn-rec btn-start" id="btn-start">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>
-          Enregistrer
-        </button>
-        <button class="btn-rec btn-stop" id="btn-stop" disabled>
-          <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-          Arrêter
-        </button>
+        <button class="btn-rec btn-start" id="btn-start"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6"/></svg>Enregistrer</button>
+        <button class="btn-rec btn-stop" id="btn-stop" disabled><svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>Arrêter</button>
       </div>
-
       <div class="playback" id="playback">
-        <div class="playback-meta">
-          <span class="ready">● Enregistrement prêt</span>
-          <button class="btn-discard" id="btn-discard">Supprimer ✕</button>
-        </div>
+        <div class="playback-meta"><span class="ready">● Enregistrement prêt</span><button class="btn-discard" id="btn-discard">Supprimer ✕</button></div>
         <audio id="audio-preview" controls></audio>
       </div>
     </div>
-
     <div class="err-msg" id="err-rec"></div>
-
-    <button class="btn-main" id="btn-process" disabled>
-      Transcrire et remplir le formulaire →
-    </button>
+    <button class="btn-main" id="btn-process" disabled>Transcrire et remplir le formulaire →</button>
   </div>
 
   <!-- Progress -->
@@ -359,7 +152,7 @@
     <div class="label">Traitement</div>
     <div class="progress-steps">
       <div class="step" id="s1"><div class="step-dot">1</div><span>Transcription audio (OpenAI Whisper)</span></div>
-      <div class="step" id="s2"><div class="step-dot">2</div><span>Extraction des données client (Claude)</span></div>
+      <div class="step" id="s2"><div class="step-dot">2</div><span>Extraction des données (Claude)</span></div>
       <div class="step" id="s3"><div class="step-dot">3</div><span>Génération du formulaire Word</span></div>
       <div class="step" id="s4"><div class="step-dot">✓</div><span>Formulaire prêt à télécharger</span></div>
     </div>
@@ -372,15 +165,8 @@
       <button class="tab active" data-tab="form">Formulaire rempli</button>
       <button class="tab" data-tab="transcript">Transcription brute</button>
     </div>
-
-    <div class="tab-panel active" id="tab-form">
-      <div class="form-preview" id="form-preview"></div>
-    </div>
-
-    <div class="tab-panel" id="tab-transcript">
-      <div class="text-output" id="transcript-out"></div>
-    </div>
-
+    <div class="tab-panel active" id="tab-form"><div class="form-preview" id="form-preview"></div></div>
+    <div class="tab-panel" id="tab-transcript"><div class="text-output" id="transcript-out"></div></div>
     <div class="actions-row">
       <button class="btn-download" id="btn-download" disabled>⬇ Télécharger le .docx</button>
       <button class="btn-sec" id="btn-new">Nouvel enregistrement</button>
@@ -389,531 +175,233 @@
 
   <footer>Audio traité par OpenAI Whisper et Anthropic Claude · Aucune donnée stockée</footer>
 </div>
-
 <script>
-// ── State ──
-let mediaRecorder = null, audioChunks = [], audioBlob = null;
-let timerInterval = null, seconds = 0, animFrame = null;
-let transcriptText = '', extractedData = null, docxBlob = null;
+let mediaRecorder=null,audioChunks=[],audioBlob=null,timerInterval=null,seconds=0,animFrame=null;
+let transcriptText='',extractedData=null,docxBlob=null;
+const $=id=>document.getElementById(id);
+const btnStart=$('btn-start'),btnStop=$('btn-stop'),btnDiscard=$('btn-discard');
+const btnProcess=$('btn-process'),btnDownload=$('btn-download');
+const timerEl=$('timer'),recDot=$('rec-dot'),recLabel=$('rec-label');
+const playback=$('playback'),audioPreview=$('audio-preview');
+const vizIdle=$('viz-idle'),canvas=$('waveCanvas'),ctx2d=canvas.getContext('2d');
+const errRec=$('err-rec');
 
-const $ = id => document.getElementById(id);
-const btnStart = $('btn-start'), btnStop = $('btn-stop'), btnDiscard = $('btn-discard');
-const btnProcess = $('btn-process'), btnDownload = $('btn-download');
-const timerEl = $('timer'), recDot = $('rec-dot'), recLabel = $('rec-label');
-const playback = $('playback'), audioPreview = $('audio-preview');
-const vizIdle = $('viz-idle'), canvas = $('waveCanvas'), ctx2d = canvas.getContext('2d');
-const errRec = $('err-rec');
-
-// ── Clés API : chargement depuis le navigateur ──
-(function loadSavedKeys() {
-  const ok = localStorage.getItem('itera_groq');
-  const ak = localStorage.getItem('itera_anthropic');
-  if (ok) $('groq-key').value = ok;
-  if (ak) $('anthropic-key').value = ak;
+// Load saved keys
+(function(){
+  const ok=localStorage.getItem('itera_openai');
+  const ak=localStorage.getItem('itera_anthropic');
+  if(ok)$('openai-key').value=ok;
+  if(ak)$('anthropic-key').value=ak;
   updateBtn();
 })();
+$('openai-key').addEventListener('input',()=>{localStorage.setItem('itera_openai',$('openai-key').value.trim());updateBtn();});
+$('anthropic-key').addEventListener('input',()=>{localStorage.setItem('itera_anthropic',$('anthropic-key').value.trim());updateBtn();});
 
-$('groq-key').addEventListener('input', () => {
-  localStorage.setItem('itera_groq', $('groq-key').value.trim());
-  updateBtn();
-});
-$('anthropic-key').addEventListener('input', () => {
-  localStorage.setItem('itera_anthropic', $('anthropic-key').value.trim());
-  updateBtn();
-});
-
-// ── Canvas ──
-function resizeCanvas() {
-  canvas.width  = canvas.offsetWidth  * devicePixelRatio;
-  canvas.height = canvas.offsetHeight * devicePixelRatio;
-}
-resizeCanvas(); window.addEventListener('resize', resizeCanvas);
-
-// ── Timer ──
-function startTimer() { seconds=0; updateTimer(); timerInterval=setInterval(()=>{seconds++;updateTimer();},1000); }
-function stopTimer()  { clearInterval(timerInterval); }
-function updateTimer() {
-  timerEl.textContent = String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');
-}
-
-// ── Waveform ──
-function drawWave(analyser) {
-  const buf = new Uint8Array(analyser.frequencyBinCount);
-  function frame() {
-    animFrame = requestAnimationFrame(frame);
+function resizeCanvas(){canvas.width=canvas.offsetWidth*devicePixelRatio;canvas.height=canvas.offsetHeight*devicePixelRatio;}
+resizeCanvas();window.addEventListener('resize',resizeCanvas);
+function startTimer(){seconds=0;updateTimer();timerInterval=setInterval(()=>{seconds++;updateTimer();},1000);}
+function stopTimer(){clearInterval(timerInterval);}
+function updateTimer(){timerEl.textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');}
+function drawWave(analyser){
+  const buf=new Uint8Array(analyser.frequencyBinCount);
+  function frame(){
+    animFrame=requestAnimationFrame(frame);
     analyser.getByteTimeDomainData(buf);
-    const W=canvas.width, H=canvas.height;
-    ctx2d.clearRect(0,0,W,H);
-    ctx2d.beginPath(); ctx2d.strokeStyle='#C9A84C';
-    ctx2d.lineWidth=2.5*devicePixelRatio; ctx2d.shadowColor='#C9A84C'; ctx2d.shadowBlur=10;
+    const W=canvas.width,H=canvas.height;
+    ctx2d.clearRect(0,0,W,H);ctx2d.beginPath();ctx2d.strokeStyle='#C9A84C';
+    ctx2d.lineWidth=2.5*devicePixelRatio;ctx2d.shadowColor='#C9A84C';ctx2d.shadowBlur=10;
     const step=W/buf.length;
-    for(let i=0;i<buf.length;i++) {
-      const y=(buf[i]/128)*H/2;
-      i===0?ctx2d.moveTo(0,y):ctx2d.lineTo(i*step,y);
-    }
+    for(let i=0;i<buf.length;i++){const y=(buf[i]/128)*H/2;i===0?ctx2d.moveTo(0,y):ctx2d.lineTo(i*step,y);}
     ctx2d.stroke();
   }
   frame();
 }
-function stopWave() { if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;} ctx2d.clearRect(0,0,canvas.width,canvas.height); }
+function stopWave(){if(animFrame){cancelAnimationFrame(animFrame);animFrame=null;}ctx2d.clearRect(0,0,canvas.width,canvas.height);}
 
-// ── Recording ──
-btnStart.addEventListener('click', async () => {
+btnStart.addEventListener('click',async()=>{
   hideErr();
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const audioCtx = new AudioContext();
-    const src = audioCtx.createMediaStreamSource(stream);
-    const analyser = audioCtx.createAnalyser(); analyser.fftSize=2048;
-    src.connect(analyser);
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const audioCtx=new AudioContext();
+    const src=audioCtx.createMediaStreamSource(stream);
+    const analyser=audioCtx.createAnalyser();analyser.fftSize=2048;src.connect(analyser);
     audioChunks=[];
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => { if(e.data.size>0) audioChunks.push(e.data); };
-    mediaRecorder.onstop = () => {
-      stream.getTracks().forEach(t=>t.stop()); audioCtx.close(); stopWave();
-      audioBlob = new Blob(audioChunks, {type:'audio/webm'});
-      audioPreview.src = URL.createObjectURL(audioBlob);
-      playback.classList.add('visible');
-      vizIdle.style.display='none';
+    mediaRecorder=new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=e=>{if(e.data.size>0)audioChunks.push(e.data);};
+    mediaRecorder.onstop=()=>{
+      stream.getTracks().forEach(t=>t.stop());audioCtx.close();stopWave();
+      audioBlob=new Blob(audioChunks,{type:'audio/webm'});
+      audioPreview.src=URL.createObjectURL(audioBlob);
+      playback.classList.add('visible');vizIdle.style.display='none';
       recDot.classList.remove('active');
       recLabel.textContent='Enregistrement terminé — '+timerEl.textContent;
-      timerEl.classList.remove('recording'); stopTimer(); updateBtn();
+      timerEl.classList.remove('recording');stopTimer();updateBtn();
     };
     mediaRecorder.start();
-    vizIdle.style.display='none'; drawWave(analyser); startTimer();
-    timerEl.classList.add('recording'); recDot.classList.add('active');
+    vizIdle.style.display='none';drawWave(analyser);startTimer();
+    timerEl.classList.add('recording');recDot.classList.add('active');
     recLabel.textContent='Enregistrement en cours…';
-    btnStart.disabled=true; btnStop.disabled=false;
-    playback.classList.remove('visible'); audioBlob=null;
-  } catch(e) { showErr('Impossible d\'accéder au microphone : '+e.message); }
+    btnStart.disabled=true;btnStop.disabled=false;
+    playback.classList.remove('visible');audioBlob=null;
+  }catch(e){showErr('Impossible d\'accéder au microphone : '+e.message);}
 });
 
-btnStop.addEventListener('click', () => {
-  if(mediaRecorder&&mediaRecorder.state!=='inactive') mediaRecorder.stop();
-  btnStart.disabled=false; btnStop.disabled=true;
+btnStop.addEventListener('click',()=>{
+  if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();
+  btnStart.disabled=false;btnStop.disabled=true;
 });
 
-btnDiscard.addEventListener('click', () => {
-  audioBlob=null; audioPreview.src=''; playback.classList.remove('visible');
-  vizIdle.style.display='flex'; recLabel.textContent='Prêt à enregistrer';
-  recDot.classList.remove('active'); timerEl.textContent='00:00'; timerEl.classList.remove('recording');
+btnDiscard.addEventListener('click',()=>{
+  audioBlob=null;audioPreview.src='';playback.classList.remove('visible');
+  vizIdle.style.display='flex';recLabel.textContent='Prêt à enregistrer';
+  recDot.classList.remove('active');timerEl.textContent='00:00';timerEl.classList.remove('recording');
   updateBtn();
 });
 
-function updateBtn() {
-  const hasKeys = $('groq-key').value.trim() && $('anthropic-key').value.trim();
-  btnProcess.disabled = !(audioBlob && hasKeys);
+function updateBtn(){
+  const hasKeys=$('openai-key').value.trim()&&$('anthropic-key').value.trim();
+  btnProcess.disabled=!(audioBlob&&hasKeys);
 }
 
-// ── Process ──
-btnProcess.addEventListener('click', async () => {
-  const groqKey = $('groq-key').value.trim();
-  const anthropicKey = $('anthropic-key').value.trim();
-  hideErr(); btnProcess.disabled=true;
+btnProcess.addEventListener('click',async()=>{
+  const openaiKey=$('openai-key').value.trim();
+  const anthropicKey=$('anthropic-key').value.trim();
+  hideErr();btnProcess.disabled=true;
   $('progress-card').classList.remove('hidden');
   $('results-card').classList.add('hidden');
 
-  // Step 1 — Whisper
   setStep('s1','active');
-  try {
-    const form = new FormData();
-    form.append('file', audioBlob, 'recording.webm');
-    form.append('model','whisper-large-v3-turbo');
+  try{
+    const form=new FormData();
+    form.append('file',audioBlob,'recording.webm');
+    form.append('model','whisper-1');
     form.append('language','fr');
     form.append('response_format','text');
-    const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
-      method:'POST', headers:{'Authorization':'Bearer '+groqKey}, body:form
+    const res=await fetch('https://api.openai.com/v1/audio/transcriptions',{
+      method:'POST',headers:{'Authorization':'Bearer '+openaiKey},body:form
     });
-    if(!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e?.error?.message||res.statusText); }
-    transcriptText = await res.text();
-    $('transcript-out').textContent = transcriptText;
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.error?.message||res.statusText);}
+    transcriptText=await res.text();
+    $('transcript-out').textContent=transcriptText;
     setStep('s1','done');
-  } catch(e) {
-    setStep('s1','err'); showErr('Erreur Whisper : '+e.message); btnProcess.disabled=false; return;
-  }
+  }catch(e){setStep('s1','err');showErr('Erreur Whisper : '+e.message);btnProcess.disabled=false;return;}
 
-  // Step 2 — Claude extraction
   setStep('s2','active');
-  const prompt = `Tu es un assistant spécialisé dans l'analyse d'entretiens de découverte d'entreprise.
-À partir de la transcription suivante, extrais toutes les informations disponibles pour remplir un formulaire de découverte.
-Réponds UNIQUEMENT avec un JSON valide (sans backticks) avec exactement cette structure :
-
-{
-  "denomination_sociale": "",
-  "siren": "",
-  "adresse": "",
-  "dirigeant": "",
-  "actionnaires": "",
-  "comptable": "",
-  "banque": "",
-  "avocat": "",
-  "notaire": "",
-  "origine": "création | acquisition | non mentionné",
-  "activite_principale": "",
-  "projets": "",
-  "tresorerie": "",
-  "placement": "",
-  "emprunt": "",
-  "prevoyance_cadre": "",
-  "tns_madelin": "",
-  "pee_pereco": "",
-  "interessement": "",
-  "homme_cle": "",
-  "indemnites_fin_carriere": "",
-  "energie_commentaire": "",
-  "rd_commentaire": "",
-  "subvention_commentaire": "",
-  "charges_sociales_commentaire": "",
-  "cession_transmission": ""
-}
-
-Pour chaque champ : mets la valeur extraite si mentionnée, sinon laisse une chaîne vide "".
-Ne déduis pas, n'invente pas — uniquement ce qui est dit explicitement.
-
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':anthropicKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:`Tu es un assistant spécialisé dans l'analyse d'entretiens de découverte d'entreprise. Extrais les informations de cette transcription. Réponds UNIQUEMENT avec un JSON valide (sans backticks) :
+{"denomination_sociale":"","siren":"","adresse":"","dirigeant":"","actionnaires":"","comptable":"","banque":"","avocat":"","notaire":"","origine":"","activite_principale":"","projets":"","tresorerie":"","placement":"","emprunt":"","prevoyance_cadre":"","tns_madelin":"","pee_pereco":"","interessement":"","homme_cle":"","indemnites_fin_carriere":"","energie_commentaire":"","rd_commentaire":"","subvention_commentaire":"","charges_sociales_commentaire":"","cession_transmission":""}
+Règle : valeur si mentionnée, sinon chaîne vide. Ne déduis pas, n'invente pas.
 Transcription :
 ---
 ${transcriptText}
----`;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':anthropicKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:2000, messages:[{role:'user',content:prompt}] })
+---`}]})
     });
-    if(!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e?.error?.message||res.statusText); }
-    const data = await res.json();
-    const raw = data.content.map(b=>b.text||'').join('');
-    extractedData = JSON.parse(raw.replace(/```json|```/g,'').trim());
-    setStep('s2','done');
-    renderFormPreview(extractedData);
-  } catch(e) {
-    setStep('s2','err'); showErr('Erreur Claude : '+e.message); btnProcess.disabled=false; return;
-  }
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e?.error?.message||res.statusText);}
+    const data=await res.json();
+    const raw=data.content.map(b=>b.text||'').join('');
+    extractedData=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    setStep('s2','done');renderFormPreview(extractedData);
+  }catch(e){setStep('s2','err');showErr('Erreur Claude : '+e.message);btnProcess.disabled=false;return;}
 
-  // Step 3 — Generate DOCX via server script
   setStep('s3','active');
-  try {
-    docxBlob = await generateDocx(extractedData);
-    setStep('s3','done');
-    setStep('s4','done');
-    btnDownload.disabled = false;
+  try{
+    docxBlob=await generateDocx(extractedData);
+    setStep('s3','done');setStep('s4','done');
+    btnDownload.disabled=false;
     $('results-card').classList.remove('hidden');
-  } catch(e) {
-    setStep('s3','err'); showErr('Erreur génération DOCX : '+e.message);
-  }
-
+  }catch(e){setStep('s3','err');showErr('Erreur DOCX : '+e.message);}
   btnProcess.disabled=false;
 });
 
-// ── Render form preview ──
-function renderFormPreview(d) {
-  const sections = [
-    {
-      title: '1. Informations Générales',
-      rows: [
-        ['Dénomination Sociale', d.denomination_sociale],
-        ['SIREN', d.siren],
-        ['Adresse', d.adresse],
-        ['Dirigeant', d.dirigeant],
-        ['Actionnaires', d.actionnaires],
-      ]
-    },
-    {
-      title: '2. Les Conseils',
-      rows: [
-        ['Comptable', d.comptable],
-        ['Banque', d.banque],
-        ['Avocat', d.avocat],
-        ['Notaire', d.notaire],
-      ]
-    },
-    {
-      title: '3. Origine de l\'Entreprise',
-      rows: [['Origine', d.origine]]
-    },
-    {
-      title: '4. Activité Principale',
-      rows: [['Description', d.activite_principale]]
-    },
-    {
-      title: '5. Projets',
-      rows: [['Projets', d.projets]]
-    },
-    {
-      title: '6. Situation Financière',
-      rows: [
-        ['Trésorerie', d.tresorerie],
-        ['Placement', d.placement],
-        ['Emprunt', d.emprunt],
-      ]
-    },
-    {
-      title: '7. Prévoyance',
-      rows: [
-        ['Prévoyance cadre', d.prevoyance_cadre],
-        ['TNS Madelin', d.tns_madelin],
-      ]
-    },
-    {
-      title: '8. Ingénierie Sociale',
-      rows: [
-        ['PEE-PERECO', d.pee_pereco],
-        ['Intéressement / Participation', d.interessement],
-      ]
-    },
-    {
-      title: '9. Homme Clé',
-      rows: [['Homme clé', d.homme_cle]]
-    },
-    {
-      title: '10. Indemnités Fin de Carrière',
-      rows: [['Indemnités', d.indemnites_fin_carriere]]
-    },
-    {
-      title: '11. Expertise Énergie & Subvention',
-      rows: [
-        ['Énergie', d.energie_commentaire],
-        ['R&D', d.rd_commentaire],
-        ['Subvention', d.subvention_commentaire],
-        ['Charges sociales', d.charges_sociales_commentaire],
-      ]
-    },
-    {
-      title: '11. Cession / Transmission',
-      rows: [['Cession / Transmission', d.cession_transmission]]
-    },
+function renderFormPreview(d){
+  const sections=[
+    {title:'1. Informations Générales',rows:[['Dénomination Sociale',d.denomination_sociale],['SIREN',d.siren],['Adresse',d.adresse],['Dirigeant',d.dirigeant],['Actionnaires',d.actionnaires]]},
+    {title:'2. Les Conseils',rows:[['Comptable',d.comptable],['Banque',d.banque],['Avocat',d.avocat],['Notaire',d.notaire]]},
+    {title:'3. Origine',rows:[['Origine',d.origine]]},
+    {title:'4. Activité Principale',rows:[['Description',d.activite_principale]]},
+    {title:'5. Projets',rows:[['Projets',d.projets]]},
+    {title:'6. Situation Financière',rows:[['Trésorerie',d.tresorerie],['Placement',d.placement],['Emprunt',d.emprunt]]},
+    {title:'7. Prévoyance',rows:[['Prévoyance cadre',d.prevoyance_cadre],['TNS Madelin',d.tns_madelin]]},
+    {title:'8. Ingénierie Sociale',rows:[['PEE-PERECO',d.pee_pereco],['Intéressement',d.interessement]]},
+    {title:'9. Homme Clé',rows:[['Homme clé',d.homme_cle]]},
+    {title:'10. Indemnités Fin de Carrière',rows:[['Indemnités',d.indemnites_fin_carriere]]},
+    {title:'11. Énergie & Subvention',rows:[['Énergie',d.energie_commentaire],['R&D',d.rd_commentaire],['Subvention',d.subvention_commentaire],['Charges sociales',d.charges_sociales_commentaire]]},
+    {title:'12. Cession / Transmission',rows:[['Cession',d.cession_transmission]]},
   ];
-
-  $('form-preview').innerHTML = sections.map(s => `
-    <div class="form-section">
-      <div class="form-section-title">${s.title}</div>
-      <div class="form-rows">
-        ${s.rows.map(([k,v]) => `
-          <div class="form-row">
-            <div class="form-key">${k}</div>
-            <div class="form-val ${v ? 'filled' : 'empty'}">${v || 'Non mentionné'}</div>
-          </div>`).join('')}
-      </div>
-    </div>`).join('');
+  $('form-preview').innerHTML=sections.map(s=>`<div class="form-section"><div class="form-section-title">${s.title}</div><div class="form-rows">${s.rows.map(([k,v])=>`<div class="form-row"><div class="form-key">${k}</div><div class="form-val ${v?'filled':'empty'}">${v||'Non mentionné'}</div></div>`).join('')}</div></div>`).join('');
 }
 
-// ── Generate DOCX (client-side via docx CDN) ──
-async function generateDocx(d) {
-  // Load docx.js from CDN
-  if (!window.docx) {
-    await new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js';
-      s.onload = resolve; s.onerror = reject;
-      document.head.appendChild(s);
+async function generateDocx(d){
+  if(!window.docx){
+    await new Promise((resolve,reject)=>{
+      const s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js';
+      s.onload=resolve;s.onerror=reject;document.head.appendChild(s);
     });
   }
-
-  const {
-    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
-    HeadingLevel, AlignmentType, WidthType, BorderStyle, ShadingType, VerticalAlign
-  } = window.docx;
-
-  const border = { style: BorderStyle.SINGLE, size: 1, color: 'CCCCCC' };
-  const borders = { top: border, bottom: border, left: border, right: border };
-  const cellMargins = { top: 80, bottom: 80, left: 120, right: 120 };
-  const TABLE_WIDTH = 9026;
-  const COL1 = 2800, COL2 = TABLE_WIDTH - COL1;
-
-  function headerCell(text) {
-    return new TableCell({
-      borders, width: { size: COL1, type: WidthType.DXA },
-      shading: { fill: '1E3047', type: ShadingType.CLEAR },
-      margins: cellMargins, verticalAlign: VerticalAlign.CENTER,
-      children: [new Paragraph({ children: [new TextRun({ text, bold: true, color: 'F0ECE4', size: 20 })] })]
-    });
-  }
-
-  function valueCell(text, colWidth=COL2) {
-    return new TableCell({
-      borders, width: { size: colWidth, type: WidthType.DXA },
-      margins: cellMargins, verticalAlign: VerticalAlign.CENTER,
-      children: [new Paragraph({ children: [new TextRun({ text: text || '', size: 20 })] })]
-    });
-  }
-
-  function sectionTitle(title) {
-    return new Paragraph({
-      spacing: { before: 300, after: 100 },
-      children: [new TextRun({ text: title, bold: true, size: 24, color: 'F47C2B' })]
-    });
-  }
-
-  function makeTable(rows) {
-    return new Table({
-      width: { size: TABLE_WIDTH, type: WidthType.DXA },
-      columnWidths: [COL1, COL2],
-      rows: rows.map(([label, value]) => new TableRow({
-        children: [headerCell(label), valueCell(value)]
-      }))
-    });
-  }
-
-  function spacer() {
-    return new Paragraph({ spacing: { after: 100 }, children: [new TextRun('')] });
-  }
-
-  const doc = new Document({
-    sections: [{
-      properties: {
-        page: { size: { width: 11906, height: 16838 }, margin: { top: 1000, right: 1000, bottom: 1000, left: 1000 } }
-      },
-      children: [
-        // Title
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          spacing: { before: 0, after: 400 },
-          children: [new TextRun({ text: 'Formulaire de Découverte Entreprise', bold: true, size: 36, color: '0D1B2A' })]
-        }),
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          spacing: { before: 0, after: 600 },
-          children: [new TextRun({ text: 'Rempli automatiquement — Itera Patrimoine', size: 18, color: '6B7E93' })]
-        }),
-
-        // 1. Infos générales
-        sectionTitle('1. Informations Générales'),
-        makeTable([
-          ['Dénomination Sociale', d.denomination_sociale],
-          ['SIREN', d.siren],
-          ['Adresse', d.adresse],
-          ['Dirigeant', d.dirigeant],
-          ['Actionnaires', d.actionnaires],
-        ]),
-        spacer(),
-
-        // 2. Conseils
-        sectionTitle('2. Les Conseils'),
-        makeTable([
-          ['Comptable', d.comptable],
-          ['Banque', d.banque],
-          ['Avocat', d.avocat],
-          ['Notaire', d.notaire],
-        ]),
-        spacer(),
-
-        // 3. Origine
-        sectionTitle('3. Origine de l\'Entreprise'),
-        makeTable([['Origine', d.origine]]),
-        spacer(),
-
-        // 4. Activité
-        sectionTitle('4. Activité Principale'),
-        makeTable([['Description', d.activite_principale]]),
-        spacer(),
-
-        // 5. Projets
-        sectionTitle('5. Projets'),
-        makeTable([['Projets', d.projets]]),
-        spacer(),
-
-        // 6. Financier
-        sectionTitle('6. Situation Financière'),
-        makeTable([
-          ['Trésorerie', d.tresorerie],
-          ['Placement', d.placement],
-          ['Emprunt', d.emprunt],
-        ]),
-        spacer(),
-
-        // 7. Prévoyance
-        sectionTitle('7. Prévoyance Président — Madelin TNS'),
-        makeTable([
-          ['Prévoyance cadre', d.prevoyance_cadre],
-          ['TNS Madelin — Prévoyance', d.tns_madelin],
-        ]),
-        spacer(),
-
-        // 8. Ingénierie
-        sectionTitle('8. Ingénierie Sociale'),
-        makeTable([
-          ['PEE-PERECO', d.pee_pereco],
-          ['Intéressement / Participation', d.interessement],
-        ]),
-        spacer(),
-
-        // 9. Homme clé
-        sectionTitle('9. Homme Clé'),
-        makeTable([['Homme clé', d.homme_cle]]),
-        spacer(),
-
-        // 10. Indemnités
-        sectionTitle('10. Indemnités Fin de Carrière'),
-        makeTable([['Indemnités', d.indemnites_fin_carriere]]),
-        spacer(),
-
-        // 11. Énergie
-        sectionTitle('11. Expertise Énergie et Subvention'),
-        makeTable([
-          ['Énergie (conso > 2 GWh)', d.energie_commentaire],
-          ['R&D', d.rd_commentaire],
-          ['Subvention / Investissement', d.subvention_commentaire],
-          ['Charges sociales', d.charges_sociales_commentaire],
-        ]),
-        spacer(),
-
-        // 12. Cession
-        sectionTitle('12. Cession / Transmission d\'Entreprise'),
-        makeTable([['Cession / Transmission', d.cession_transmission]]),
-        spacer(),
-
-        // Footer note
-        new Paragraph({
-          spacing: { before: 600 },
-          alignment: AlignmentType.CENTER,
-          children: [new TextRun({ text: 'Document généré automatiquement par Itera Patrimoine · ' + new Date().toLocaleDateString('fr-FR'), size: 16, color: '6B7E93' })]
-        })
-      ]
-    }]
-  });
-
-  const buffer = await Packer.toBlob(doc);
-  return buffer;
+  const{Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,AlignmentType,WidthType,BorderStyle,ShadingType,VerticalAlign}=window.docx;
+  const border={style:BorderStyle.SINGLE,size:1,color:'CCCCCC'};
+  const borders={top:border,bottom:border,left:border,right:border};
+  const cm={top:80,bottom:80,left:120,right:120};
+  const TW=9026,C1=2800,C2=TW-C1;
+  const hCell=txt=>new TableCell({borders,width:{size:C1,type:WidthType.DXA},shading:{fill:'152033',type:ShadingType.CLEAR},margins:cm,verticalAlign:VerticalAlign.CENTER,children:[new Paragraph({children:[new TextRun({text:txt,bold:true,color:'C9A84C',size:20})]})]});
+  const vCell=txt=>new TableCell({borders,width:{size:C2,type:WidthType.DXA},margins:cm,verticalAlign:VerticalAlign.CENTER,children:[new Paragraph({children:[new TextRun({text:txt||'',size:20})]})]});
+  const mkTable=rows=>new Table({width:{size:TW,type:WidthType.DXA},columnWidths:[C1,C2],rows:rows.map(([l,v])=>new TableRow({children:[hCell(l),vCell(v)]}))});
+  const sec=t=>new Paragraph({spacing:{before:280,after:80},children:[new TextRun({text:t,bold:true,size:22,color:'C9A84C'})]});
+  const sp=()=>new Paragraph({spacing:{after:80},children:[new TextRun('')]});
+  const doc=new Document({sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:900,right:900,bottom:900,left:900}}},children:[
+    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:300},children:[new TextRun({text:'Formulaire de Découverte Entreprise',bold:true,size:34,color:'0e1a2e'})]}),
+    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:500},children:[new TextRun({text:'Itera Patrimoine · '+new Date().toLocaleDateString('fr-FR'),size:18,color:'6B7E93'})]}),
+    sec('1. Informations Générales'),mkTable([['Dénomination Sociale',d.denomination_sociale],['SIREN',d.siren],['Adresse',d.adresse],['Dirigeant',d.dirigeant],['Actionnaires',d.actionnaires]]),sp(),
+    sec('2. Les Conseils'),mkTable([['Comptable',d.comptable],['Banque',d.banque],['Avocat',d.avocat],['Notaire',d.notaire]]),sp(),
+    sec('3. Origine'),mkTable([['Origine',d.origine]]),sp(),
+    sec('4. Activité Principale'),mkTable([['Description',d.activite_principale]]),sp(),
+    sec('5. Projets'),mkTable([['Projets',d.projets]]),sp(),
+    sec('6. Situation Financière'),mkTable([['Trésorerie',d.tresorerie],['Placement',d.placement],['Emprunt',d.emprunt]]),sp(),
+    sec('7. Prévoyance'),mkTable([['Prévoyance cadre',d.prevoyance_cadre],['TNS Madelin',d.tns_madelin]]),sp(),
+    sec('8. Ingénierie Sociale'),mkTable([['PEE-PERECO',d.pee_pereco],['Intéressement',d.interessement]]),sp(),
+    sec('9. Homme Clé'),mkTable([['Homme clé',d.homme_cle]]),sp(),
+    sec('10. Indemnités Fin de Carrière'),mkTable([['Indemnités',d.indemnites_fin_carriere]]),sp(),
+    sec('11. Énergie & Subvention'),mkTable([['Énergie (> 2 GWh)',d.energie_commentaire],['R&D',d.rd_commentaire],['Subvention',d.subvention_commentaire],['Charges sociales',d.charges_sociales_commentaire]]),sp(),
+    sec('12. Cession / Transmission'),mkTable([['Cession / Transmission',d.cession_transmission]]),sp(),
+  ]}]});
+  return await Packer.toBlob(doc);
 }
 
-// ── Download ──
-btnDownload.addEventListener('click', () => {
-  if (!docxBlob) return;
-  const url = URL.createObjectURL(docxBlob);
-  const a = document.createElement('a');
-  a.href = url;
-  const company = extractedData?.denomination_sociale?.replace(/\s+/g,'_') || 'Client';
-  a.download = 'Decouverte_' + company + '_' + new Date().toISOString().slice(0,10) + '.docx';
-  a.click();
-  URL.revokeObjectURL(url);
+btnDownload.addEventListener('click',()=>{
+  if(!docxBlob)return;
+  const url=URL.createObjectURL(docxBlob);
+  const a=document.createElement('a');a.href=url;
+  const co=extractedData?.denomination_sociale?.replace(/\s+/g,'_')||'Client';
+  a.download='Decouverte_'+co+'_'+new Date().toISOString().slice(0,10)+'.docx';
+  a.click();URL.revokeObjectURL(url);
 });
 
-// ── Tabs ──
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>{
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
     document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
-    tab.classList.add('active');
-    $('tab-'+tab.dataset.tab).classList.add('active');
+    tab.classList.add('active');$('tab-'+tab.dataset.tab).classList.add('active');
   });
 });
 
-// ── Reset ──
-$('btn-new').addEventListener('click', () => {
-  audioBlob=null; transcriptText=''; extractedData=null; docxBlob=null;
-  audioPreview.src=''; playback.classList.remove('visible');
-  vizIdle.style.display='flex'; recLabel.textContent='Prêt à enregistrer';
-  recDot.classList.remove('active'); timerEl.textContent='00:00'; timerEl.classList.remove('recording');
-  $('progress-card').classList.add('hidden'); $('results-card').classList.add('hidden');
-  btnDownload.disabled=true;
+$('btn-new').addEventListener('click',()=>{
+  audioBlob=null;transcriptText='';extractedData=null;docxBlob=null;
+  audioPreview.src='';playback.classList.remove('visible');
+  vizIdle.style.display='flex';recLabel.textContent='Prêt à enregistrer';
+  recDot.classList.remove('active');timerEl.textContent='00:00';timerEl.classList.remove('recording');
+  $('progress-card').classList.add('hidden');$('results-card').classList.add('hidden');
+  btnDownload.disabled=true;btnDownload.textContent='⬇ Télécharger le .docx';
   ['s1','s2','s3','s4'].forEach(id=>setStep(id,''));
-  hideErr(); updateBtn();
+  hideErr();updateBtn();
 });
 
-function setStep(id, state) { $(id).className='step'+(state?' '+state:''); }
-function showErr(msg) { errRec.textContent=msg; errRec.classList.add('visible'); }
-function hideErr() { errRec.classList.remove('visible'); }
+function setStep(id,state){$(id).className='step'+(state?' '+state:'');}
+function showErr(msg){errRec.textContent=msg;errRec.classList.add('visible');}
+function hideErr(){errRec.classList.remove('visible');}
 </script>
 </body>
 </html>
