@@ -306,7 +306,7 @@
   </header>
 
 
-  <input type="hidden" id="openai-key" value="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">
+  <input type="hidden" id="groq-key" value="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">
   <input type="hidden" id="anthropic-key" value="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">
 
   <!-- Recorder -->
@@ -358,7 +358,7 @@
   <div class="card hidden" id="progress-card">
     <div class="label">Traitement</div>
     <div class="progress-steps">
-      <div class="step" id="s1"><div class="step-dot">1</div><span>Transcription audio (Groq Whisper — gratuit)</span></div>
+      <div class="step" id="s1"><div class="step-dot">1</div><span>Transcription audio (OpenAI Whisper)</span></div>
       <div class="step" id="s2"><div class="step-dot">2</div><span>Extraction des données client (Claude)</span></div>
       <div class="step" id="s3"><div class="step-dot">3</div><span>Génération du formulaire Word</span></div>
       <div class="step" id="s4"><div class="step-dot">✓</div><span>Formulaire prêt à télécharger</span></div>
@@ -403,6 +403,24 @@ const timerEl = $('timer'), recDot = $('rec-dot'), recLabel = $('rec-label');
 const playback = $('playback'), audioPreview = $('audio-preview');
 const vizIdle = $('viz-idle'), canvas = $('waveCanvas'), ctx2d = canvas.getContext('2d');
 const errRec = $('err-rec');
+
+// ── Clés API : chargement depuis le navigateur ──
+(function loadSavedKeys() {
+  const ok = localStorage.getItem('itera_groq');
+  const ak = localStorage.getItem('itera_anthropic');
+  if (ok) $('groq-key').value = ok;
+  if (ak) $('anthropic-key').value = ak;
+  updateBtn();
+})();
+
+$('groq-key').addEventListener('input', () => {
+  localStorage.setItem('itera_groq', $('groq-key').value.trim());
+  updateBtn();
+});
+$('anthropic-key').addEventListener('input', () => {
+  localStorage.setItem('itera_anthropic', $('anthropic-key').value.trim());
+  updateBtn();
+});
 
 // ── Canvas ──
 function resizeCanvas() {
@@ -483,12 +501,13 @@ btnDiscard.addEventListener('click', () => {
 });
 
 function updateBtn() {
-  btnProcess.disabled = !audioBlob;
+  const hasKeys = $('groq-key').value.trim() && $('anthropic-key').value.trim();
+  btnProcess.disabled = !(audioBlob && hasKeys);
 }
 
 // ── Process ──
 btnProcess.addEventListener('click', async () => {
-  const openaiKey = $('openai-key').value.trim();
+  const groqKey = $('groq-key').value.trim();
   const anthropicKey = $('anthropic-key').value.trim();
   hideErr(); btnProcess.disabled=true;
   $('progress-card').classList.remove('hidden');
@@ -499,11 +518,11 @@ btnProcess.addEventListener('click', async () => {
   try {
     const form = new FormData();
     form.append('file', audioBlob, 'recording.webm');
-    form.append('model','whisper-1');
+    form.append('model','whisper-large-v3-turbo');
     form.append('language','fr');
     form.append('response_format','text');
-    const res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-      method:'POST', headers:{'Authorization':'Bearer '+openaiKey}, body:form
+    const res = await fetch('https://api.groq.com/openai/v1/audio/transcriptions', {
+      method:'POST', headers:{'Authorization':'Bearer '+groqKey}, body:form
     });
     if(!res.ok) { const e=await res.json().catch(()=>({})); throw new Error(e?.error?.message||res.statusText); }
     transcriptText = await res.text();
