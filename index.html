@@ -352,7 +352,7 @@ async function generateDocx(d){
   const mkTable=rows=>new Table({width:{size:TW,type:WidthType.DXA},columnWidths:[C1,C2],rows:rows.map(([l,v])=>new TableRow({children:[hCell(l),vCell(v)]}))});
   const sec=t=>new Paragraph({spacing:{before:280,after:80},children:[new TextRun({text:t,bold:true,size:22,color:'C9A84C'})]});
   const sp=()=>new Paragraph({spacing:{after:80},children:[new TextRun('')]});
-  const doc=new Document({sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:900,right:900,bottom:900,left:900}}},children:[
+  const doc=new Document({sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:900,right:900,bottom:900,left:900}},children:[
     new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:300},children:[new TextRun({text:'Formulaire de Découverte Entreprise',bold:true,size:34,color:'0e1a2e'})]}),
     new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:500},children:[new TextRun({text:'Itera Patrimoine · '+new Date().toLocaleDateString('fr-FR'),size:18,color:'6B7E93'})]}),
     sec('1. Informations Générales'),mkTable([['Dénomination Sociale',d.denomination_sociale],['SIREN',d.siren],['Adresse',d.adresse],['Dirigeant',d.dirigeant],['Actionnaires',d.actionnaires]]),sp(),
