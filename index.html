@@ -396,7 +396,8 @@ async function generateDocx(d){
       ]
     }]
   });
-  return await Packer.toBlob(doc);
+  const buffer = await Packer.toBuffer(doc);
+  return new Blob([buffer], {type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"});
 }
 
 btnDownload.addEventListener("click",()=>{
