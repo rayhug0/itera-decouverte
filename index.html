@@ -850,18 +850,18 @@ function renderPreview(d){
 
 // ── Missing badges ──
 const sectionFields = {
-  1: ["f_raison_sociale","f_siren","f_adresse","f_dirigeant"],
-  2: ["f_comptable","f_banque"],
+  1: ["f_raison_sociale","f_siren","f_adresse","f_dirigeant","f_actionnaires","f_effectif","f_ca"],
+  2: ["f_comptable","f_banque","f_avocat","f_notaire","f_autres_conseils"],
   3: ["f_annee_creation","f_historique"],
-  4: ["f_secteur","f_activite"],
-  5: ["f_projets_court","f_projets_moyen"],
-  6: ["f_tresorerie","f_placement","f_emprunt"],
-  7: ["f_prevoyance_cadre","f_tns_prevoyance"],
-  8: ["f_pee_pereco","f_interessement"],
-  9: ["f_homme_cle"],
-  10: ["f_ifc"],
-  11: ["f_energie","f_rd"],
-  12: ["f_cession_horizon"],
+  4: ["f_secteur","f_activite","f_marches","f_concurrence"],
+  5: ["f_projets_court","f_projets_moyen","f_projets_long"],
+  6: ["f_tresorerie","f_tresorerie_com","f_placement","f_placement_com","f_emprunt","f_emprunt_com"],
+  7: ["f_prevoyance_cadre","f_prevoyance_com","f_tns_prevoyance","f_tns_retraite","f_tns_com"],
+  8: ["f_pee_pereco","f_pee_com","f_interessement","f_participation","f_social_com"],
+  9: ["f_homme_cle","f_homme_cle_couverture","f_homme_cle_com"],
+  10: ["f_ifc","f_ifc_com"],
+  11: ["f_energie","f_rd","f_subventions","f_social_audit"],
+  12: ["f_cession_horizon","f_cession_valeur","f_cession_com"],
 };
 
 function updateMissingBadges(){
