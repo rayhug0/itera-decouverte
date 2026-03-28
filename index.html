@@ -852,7 +852,7 @@ function renderPreview(d){
 const sectionFields = {
   1: ["f_raison_sociale","f_siren","f_adresse","f_dirigeant","f_actionnaires","f_effectif","f_ca"],
   2: ["f_comptable","f_banque","f_avocat","f_notaire","f_autres_conseils"],
-  3: ["f_annee_creation","f_historique"],
+  3: ["_radio_origine","f_annee_creation","f_historique"],
   4: ["f_secteur","f_activite","f_marches","f_concurrence"],
   5: ["f_projets_court","f_projets_moyen","f_projets_long"],
   6: ["f_tresorerie","f_tresorerie_com","f_placement","f_placement_com","f_emprunt","f_emprunt_com"],
@@ -866,7 +866,16 @@ const sectionFields = {
 
 function updateMissingBadges(){
   Object.entries(sectionFields).forEach(([sec, fields])=>{
-    const missing = fields.filter(id=>{ const el=document.getElementById(id); return !el||!el.value.trim(); }).length;
+    const missing = fields.filter(id=>{
+      // Handle radio group sentinel: _radio_groupname
+      if(id.startsWith("_radio_")){
+        const name = id.replace("_radio_","");
+        return !document.querySelector("input[name='"+name+"']:checked");
+      }
+      const el=document.getElementById(id);
+      if(!el) return true;
+      return !el.value.trim();
+    }).length;
     const badge = document.getElementById("badge"+sec);
     if(!badge) return;
     if(missing === 0){
