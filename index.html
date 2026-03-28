@@ -262,12 +262,6 @@
         </div>
 
 
-        <!-- Preview after transcription -->
-        <div id="previewContainer" style="display:none;margin-top:1.25rem;">
-          <div style="font-size:0.78rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.75rem;">Aperçu des données extraites</div>
-          <div class="preview-grid" id="previewGrid"></div>
-        </div>
-
         <div class="err-inline" id="errRec"></div>
 
         <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
@@ -443,6 +437,12 @@
         <div style="margin-top:1.5rem;padding:1rem;background:var(--cream);border-radius:var(--radius);font-size:0.82rem;color:var(--text-muted);">
           Le document inclura : toutes les sections remplies · la transcription de l'entretien · les préconisations IA
         </div>
+
+        <!-- Preview table -->
+        <div id="previewContainer" style="display:none;margin-top:1.75rem;">
+          <div style="font-size:0.78rem;font-weight:500;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);margin-bottom:0.75rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border);">Aperçu du dossier extrait</div>
+          <div class="preview-grid" id="previewGrid"></div>
+        </div>
       </div>
 
     </div>
@@ -509,6 +509,13 @@ function goTo(n){
   document.getElementById("btnPrev").style.display = n > 0 ? "inline-flex" : "none";
   document.getElementById("btnNext").textContent = n === totalSections-1 ? "Terminé ✓" : "Suivant →";
   document.getElementById("progressFill").style.width = Math.round((n/(totalSections-1))*100)+"%";
+  // Refresh preview when navigating to export section
+  if(n === 14 && fullTranscript) {
+    document.getElementById("previewContainer").style.display = "block";
+    // Re-render with current form values
+    const d = collectFormData();
+    renderPreviewFromForm(d);
+  }
   window.scrollTo({top:0});
 }
 function nextSection(){ if(currentSection < totalSections-1) goTo(currentSection+1); }
@@ -629,7 +636,13 @@ async function transcribeAndFill(){
       method:"POST", headers:{"Authorization":"Bearer "+openaiKey}, body:form
     });
     if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e?.error?.message||res.statusText); }
-    fullTranscript = await res.text();
+    const newTranscript = await res.text();
+    // Append to existing transcript if there is one
+    if(fullTranscript && fullTranscript.trim()) {
+      fullTranscript = fullTranscript.trim() + " " + newTranscript.trim();
+    } else {
+      fullTranscript = newTranscript;
+    }
     document.getElementById("transcriptBox").textContent = fullTranscript;
     setStep("st1","done");
   }catch(e){
@@ -825,7 +838,51 @@ function exportWord(){
 
 
 // ── Preview ──
+function renderPreviewFromForm(d){
+  // Build preview from current form state (after manual edits)
+  const liveD = {
+    raison_sociale: document.getElementById("f_raison_sociale")?.value || d.raison_sociale || "",
+    siren: document.getElementById("f_siren")?.value || d.siren || "",
+    dirigeant: document.getElementById("f_dirigeant")?.value || d.dirigeant || "",
+    actionnaires: document.getElementById("f_actionnaires")?.value || d.actionnaires || "",
+    effectif: document.getElementById("f_effectif")?.value || d.effectif || "",
+    ca: document.getElementById("f_ca")?.value || d.ca || "",
+    comptable: document.getElementById("f_comptable")?.value || "",
+    banque: document.getElementById("f_banque")?.value || "",
+    avocat: document.getElementById("f_avocat")?.value || "",
+    notaire: document.getElementById("f_notaire")?.value || "",
+    origine: (document.querySelector("input[name='origine']:checked") || {}).value || d.origine || "",
+    annee_creation: document.getElementById("f_annee_creation")?.value || "",
+    historique: document.getElementById("f_historique")?.value || "",
+    secteur: document.getElementById("f_secteur")?.value || "",
+    activite: document.getElementById("f_activite")?.value || "",
+    marches: document.getElementById("f_marches")?.value || "",
+    projets_court: document.getElementById("f_projets_court")?.value || "",
+    projets_moyen: document.getElementById("f_projets_moyen")?.value || "",
+    projets_long: document.getElementById("f_projets_long")?.value || "",
+    tresorerie: document.getElementById("f_tresorerie")?.value || "",
+    placement: document.getElementById("f_placement")?.value || "",
+    emprunt: document.getElementById("f_emprunt")?.value || "",
+    prevoyance_cadre: document.getElementById("f_prevoyance_cadre")?.value || "",
+    tns_prevoyance: document.getElementById("f_tns_prevoyance")?.value || "",
+    tns_retraite: document.getElementById("f_tns_retraite")?.value || "",
+    pee_pereco: document.getElementById("f_pee_pereco")?.value || "",
+    interessement: document.getElementById("f_interessement")?.value || "",
+    participation: document.getElementById("f_participation")?.value || "",
+    homme_cle: document.getElementById("f_homme_cle")?.value || "",
+    homme_cle_couverture: document.getElementById("f_homme_cle_couverture")?.value || "",
+    ifc: document.getElementById("f_ifc")?.value || "",
+    energie: document.getElementById("f_energie")?.value || "",
+    rd: document.getElementById("f_rd")?.value || "",
+    subventions: document.getElementById("f_subventions")?.value || "",
+    cession_horizon: document.getElementById("f_cession_horizon")?.value || "",
+    cession_valeur: document.getElementById("f_cession_valeur")?.value || "",
+  };
+  renderPreview(liveD);
+}
+
 function renderPreview(d){
+  document.getElementById("previewContainer").style.display = "block";
   const sections = [
     {title:"1. Informations générales", rows:[["Dénomination sociale",d.raison_sociale],["SIREN",d.siren],["Dirigeant",d.dirigeant],["Actionnaires",d.actionnaires],["Effectif",d.effectif],["CA",d.ca]]},
     {title:"2. Les conseils", rows:[["Comptable",d.comptable],["Banque",d.banque],["Avocat",d.avocat],["Notaire",d.notaire]]},
