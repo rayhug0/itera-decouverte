@@ -264,10 +264,14 @@
 
         <div class="err-inline" id="errRec"></div>
 
-        <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;">
-          <button class="btn btn-primary" onclick="transcribeAndFill()" id="btnTranscribe" disabled>🤖 Transcrire &amp; Remplir les sections</button>
+        <div style="margin-top:1rem;display:flex;gap:0.75rem;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn-primary" onclick="transcribeAndFill(false)" id="btnTranscribe" disabled>🤖 Transcrire &amp; Remplir les sections</button>
+          <button class="btn btn-outline" onclick="transcribeAndFill(true)" id="btnAnalyzeNow" disabled style="border-color:var(--gold);color:var(--navy);">⚡ Analyser jusqu'ici</button>
           <button class="btn btn-outline" onclick="goTo(1)">Remplir manuellement →</button>
           <button class="btn btn-outline" onclick="resetAll()" style="margin-left:auto;">↺ Nouvel enregistrement</button>
+        </div>
+        <div id="analyzeHintBox" style="display:none;margin-top:0.75rem;padding:0.6rem 0.85rem;background:#fffbea;border:1px solid var(--gold-light);border-radius:var(--radius);font-size:0.8rem;color:#7a4f00;">
+          ⚡ <strong>Analyser jusqu'ici</strong> — analyse ce qui a été dit sans couper l'enregistrement. Tu peux continuer à parler après.
         </div>
       </div>
 
@@ -587,6 +591,8 @@ async function startRecording(){
     document.getElementById("btnRec").classList.add("recording");
     document.getElementById("recIndicator").classList.add("active");
     document.getElementById("btnTranscribe").disabled = true;
+    document.getElementById("btnAnalyzeNow").disabled = false;
+    document.getElementById("analyzeHintBox").style.display = "block";
   }catch(e){ showErr("Impossible d'accéder au microphone : "+e.message); }
 }
 
@@ -597,6 +603,7 @@ function stopRecording(){
   document.getElementById("btnRec").textContent = "⏺ Enregistrer";
   document.getElementById("btnRec").classList.remove("recording");
   document.getElementById("recIndicator").classList.remove("active");
+  document.getElementById("analyzeHintBox").style.display = "none";
 }
 
 function discardRecording(){
@@ -612,23 +619,42 @@ function discardRecording(){
 }
 
 // ── Transcribe & Fill ──
-async function transcribeAndFill(){
+async function transcribeAndFill(keepRecording=false){
   const openaiKey = getOpenAIKey();
   const anthropicKey = getAnthropicKey();
   if(!openaiKey||!anthropicKey){ showErr("Veuillez renseigner les clés API en haut de page."); return; }
-  if(!audioBlob){ showErr("Aucun enregistrement disponible."); return; }
+
+  // If keepRecording: pause mic briefly to grab current audio, then resume
+  let blobToTranscribe = audioBlob;
+  if(keepRecording && isRecording){
+    // Stop current recording to get the blob, then restart
+    await new Promise(resolve => {
+      const originalOnstop = mediaRecorder.onstop;
+      mediaRecorder.onstop = (e) => {
+        originalOnstop(e);
+        blobToTranscribe = audioBlob;
+        resolve();
+      };
+      mediaRecorder.stop();
+    });
+    // Restart recording immediately
+    setTimeout(()=>{ if(!isRecording) startRecording(); }, 400);
+  }
+
+  if(!blobToTranscribe){ showErr("Aucun enregistrement disponible."); return; }
 
   hideErr();
   document.getElementById("btnTranscribe").disabled = true;
+  document.getElementById("btnAnalyzeNow").disabled = true;
   document.getElementById("stepsRow").style.display = "flex";
   document.getElementById("transcriptBox").style.display = "block";
-  document.getElementById("transcriptBox").textContent = "Transcription en cours…";
+  document.getElementById("transcriptBox").textContent = keepRecording ? "Analyse en cours (enregistrement continue)…" : "Transcription en cours…";
 
   // Step 1 — Whisper
   setStep("st1","active");
   try{
     const form = new FormData();
-    form.append("file", audioBlob, "recording.webm");
+    form.append("file", blobToTranscribe, "recording.webm");
     form.append("model","whisper-1");
     form.append("language","fr");
     form.append("response_format","text");
@@ -696,6 +722,7 @@ Règle : valeur si mentionnée explicitement, chaîne vide sinon. Ne déduis pas
     showErr("Erreur Claude : "+e.message);
   }
   document.getElementById("btnTranscribe").disabled = false;
+  document.getElementById("btnAnalyzeNow").disabled = !isRecording;
 }
 
 // ── Préconisations ──
@@ -954,6 +981,8 @@ function resetAll(){
   if(isRecording) stopRecording();
   document.getElementById("btnDiscard").style.display="none";
   document.getElementById("btnTranscribe").disabled=true;
+  document.getElementById("btnAnalyzeNow").disabled=true;
+  document.getElementById("analyzeHintBox").style.display="none";
   document.getElementById("transcriptBox").style.display="none";
   document.getElementById("previewContainer").style.display="none";
   document.getElementById("transcriptBox").textContent="";
